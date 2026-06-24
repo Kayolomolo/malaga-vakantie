@@ -7,12 +7,15 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#1a0a2e">
 <title>Málaga 2026</title>
+<link rel="icon" href="icon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{--bg:#1a0a2e;--surface:#241545;--surface2:#2e1f55;--accent:#f7a51e;--accent2:#e8920a;--blue:#3b82f6;--green:#22c55e;--red:#ef4444;--pink:#ec4899;--purple:#a855f7;--text:#f0e6ff;--text2:#9b8ab8;--orange:#f97316;--teal:#14b8a6}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding-bottom:80px}
 .header{padding:16px;text-align:center;background:linear-gradient(135deg,#1a0a2e,#2d1052,#1a0a2e);border-bottom:1px solid #ffffff10}
+.header{display:flex;align-items:center;justify-content:center;gap:10px;flex-direction:column}
+.header .top-row{display:flex;align-items:center;gap:10px}
 .header h1{font-size:24px;font-weight:700;background:linear-gradient(135deg,var(--accent),var(--orange));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
 .header .sub{font-size:13px;color:var(--text2);margin-top:4px}
 .tabs{display:flex;position:fixed;bottom:0;left:0;right:0;background:var(--surface);border-top:1px solid #ffffff12;z-index:100}
@@ -110,7 +113,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 <body>
 
 <div class="header">
-  <h1>☀️ Málaga 2026</h1>
+  <div class="top-row">
+    <img src="icon.svg" width="40" height="40" style="border-radius:10px" alt="Málaga">
+    <h1>Málaga 2026</h1>
+  </div>
   <div class="sub">10 – 17 juli · met z'n tweeën</div>
 </div>
 
