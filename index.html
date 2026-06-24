@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#1a0a2e">
+<title>Málaga 2026</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#1a0a2e;--surface:#241545;--surface2:#2e1f55;--accent:#f7a51e;--accent2:#e8920a;--blue:#3b82f6;--green:#22c55e;--red:#ef4444;--pink:#ec4899;--purple:#a855f7;--text:#f0e6ff;--text2:#9b8ab8;--orange:#f97316;--teal:#14b8a6}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding-bottom:80px}
+.header{padding:16px;text-align:center;background:linear-gradient(135deg,#1a0a2e,#2d1052,#1a0a2e);border-bottom:1px solid #ffffff10}
+.header h1{font-size:24px;font-weight:700;background:linear-gradient(135deg,var(--accent),var(--orange));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.header .sub{font-size:13px;color:var(--text2);margin-top:4px}
+.tabs{display:flex;position:fixed;bottom:0;left:0;right:0;background:var(--surface);border-top:1px solid #ffffff12;z-index:100}
+.tabs button{flex:1;padding:8px 0 6px;background:none;border:none;color:var(--text2);font-size:9px;display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;transition:color .2s}
+.tabs button.active{color:var(--accent)}
+.tabs button i{font-size:20px}
+.page{display:none;padding:16px}
+.page.active{display:block}
+.card{background:var(--surface);border-radius:14px;padding:16px;margin-bottom:12px;border:1px solid #ffffff08}
+.card h3{font-size:14px;color:var(--text2);margin-bottom:12px;font-weight:500;display:flex;align-items:center;gap:6px}
+.btn{width:100%;padding:12px;border:none;border-radius:10px;font-size:15px;font-weight:600;cursor:pointer;transition:transform .1s}
+.btn:active{transform:scale(0.97)}
+.btn-primary{background:var(--accent);color:#1a0a2e}
+.btn-danger{background:var(--red);color:#fff}
+.btn-small{width:auto;padding:8px 14px;font-size:13px;border-radius:8px}
+.form-group{margin-bottom:14px}
+.form-group label{display:block;font-size:12px;color:var(--text2);margin-bottom:6px;font-weight:500}
+.form-group select,.form-group input,.form-group textarea{width:100%;padding:10px 12px;background:var(--surface2);border:1px solid #ffffff15;border-radius:8px;color:var(--text);font-size:14px;outline:none}
+.form-group select:focus,.form-group input:focus,.form-group textarea:focus{border-color:var(--accent)}
+.form-group textarea{height:60px;resize:none}
+.empty-state{text-align:center;padding:30px 20px;color:var(--text2)}
+.empty-state i{font-size:36px;margin-bottom:10px;display:block;opacity:.4}
+
+/* Countdown */
+.countdown{display:flex;justify-content:center;gap:16px;padding:20px 0}
+.countdown .unit{text-align:center}
+.countdown .val{font-size:36px;font-weight:800;background:linear-gradient(135deg,var(--accent),var(--orange));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.countdown .lbl{font-size:11px;color:var(--text2);margin-top:2px}
+.trip-info{display:flex;justify-content:center;gap:20px;margin-top:8px}
+.trip-info span{font-size:12px;color:var(--text2)}
+
+/* Packing */
+.pack-cat{margin-bottom:16px}
+.pack-cat-title{font-size:13px;font-weight:600;color:var(--accent);margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.pack-cat-title .count{font-size:11px;color:var(--text2);font-weight:400}
+.pack-item{display:flex;align-items:center;gap:10px;padding:10px;background:var(--surface2);border-radius:8px;margin-bottom:4px;cursor:pointer}
+.pack-item .check{width:22px;height:22px;border-radius:6px;border:2px solid #ffffff20;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0;transition:all .2s}
+.pack-item.done .check{background:var(--green);border-color:var(--green);color:#fff}
+.pack-item.done .name{color:var(--text2);text-decoration:line-through}
+.pack-item .name{flex:1;font-size:14px}
+.pack-item .del{background:none;border:none;color:#ef444460;font-size:16px;cursor:pointer;padding:4px}
+.pack-progress{height:6px;background:var(--surface2);border-radius:3px;overflow:hidden;margin-bottom:6px}
+.pack-progress-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--green));border-radius:3px;transition:width .3s}
+.pack-progress-label{font-size:11px;color:var(--text2);text-align:right}
+.add-row{display:flex;gap:8px}
+.add-row input{flex:1}
+.add-row select{width:auto;min-width:100px}
+.add-row button{padding:10px 14px;border-radius:8px;border:none;background:var(--accent);color:#1a0a2e;font-size:16px;cursor:pointer;flex-shrink:0}
+
+/* Planner */
+.day-tab-scroll{display:flex;gap:6px;overflow-x:auto;padding:4px 0 12px;-webkit-overflow-scrolling:touch}
+.day-tab-scroll::-webkit-scrollbar{display:none}
+.day-tab{padding:8px 14px;border-radius:20px;background:var(--surface2);border:1px solid #ffffff10;font-size:12px;color:var(--text2);cursor:pointer;white-space:nowrap;flex-shrink:0;transition:all .2s}
+.day-tab.active{background:var(--accent);color:#1a0a2e;font-weight:600;border-color:var(--accent)}
+.activity{display:flex;gap:10px;padding:12px;background:var(--surface2);border-radius:10px;margin-bottom:8px;border-left:3px solid var(--accent)}
+.activity .time{font-size:12px;color:var(--accent);font-weight:600;width:50px;flex-shrink:0}
+.activity .info{flex:1}
+.activity .act-title{font-size:14px;font-weight:500}
+.activity .act-note{font-size:12px;color:var(--text2);margin-top:2px}
+.activity .del{background:none;border:none;color:#ef444460;font-size:16px;cursor:pointer;padding:4px;align-self:flex-start}
+
+/* Guide */
+.spot-card{background:var(--surface2);border-radius:12px;padding:14px;margin-bottom:10px;cursor:pointer;transition:transform .1s}
+.spot-card:active{transform:scale(0.98)}
+.spot-card .spot-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px}
+.spot-card .spot-name{font-size:15px;font-weight:600}
+.spot-card .spot-cat{font-size:10px;padding:2px 8px;border-radius:20px;background:var(--accent);color:#1a0a2e;font-weight:600}
+.spot-card .spot-desc{font-size:12px;color:var(--text2);line-height:1.4}
+.spot-card .spot-meta{display:flex;gap:12px;margin-top:8px;font-size:11px;color:var(--text2)}
+.spot-card .spot-meta i{margin-right:2px}
+.filter-row{display:flex;gap:6px;overflow-x:auto;padding-bottom:12px;-webkit-overflow-scrolling:touch}
+.filter-row::-webkit-scrollbar{display:none}
+.filter-btn{padding:6px 12px;border-radius:20px;background:var(--surface2);border:1px solid #ffffff10;font-size:12px;color:var(--text2);cursor:pointer;white-space:nowrap;flex-shrink:0}
+.filter-btn.active{background:var(--accent);color:#1a0a2e;border-color:var(--accent);font-weight:600}
+
+/* Budget */
+.budget-summary{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:14px}
+.budget-stat{background:var(--surface2);border-radius:10px;padding:12px;text-align:center}
+.budget-stat .val{font-size:20px;font-weight:700}
+.budget-stat .lbl{font-size:10px;color:var(--text2);margin-top:2px}
+.expense-item{display:flex;align-items:center;gap:10px;padding:12px;background:var(--surface2);border-radius:10px;margin-bottom:6px}
+.expense-item .cat-icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.expense-item .exp-info{flex:1}
+.expense-item .exp-name{font-size:14px}
+.expense-item .exp-cat{font-size:11px;color:var(--text2)}
+.expense-item .exp-amount{font-size:16px;font-weight:700;color:var(--accent)}
+.expense-item .del{background:none;border:none;color:#ef444460;font-size:16px;cursor:pointer;padding:4px}
+.cat-bar{margin-bottom:8px}
+.cat-bar .cat-label{display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px}
+.cat-bar .cat-label span:first-child{color:var(--text2)}
+.cat-bar .bar{height:8px;background:var(--surface);border-radius:4px;overflow:hidden}
+.cat-bar .bar-fill{height:100%;border-radius:4px;transition:width .3s}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>☀️ Málaga 2026</h1>
+  <div class="sub">10 – 17 juli · met z'n tweeën</div>
+</div>
+
+<!-- HOME -->
+<div id="page-home" class="page active">
+  <div class="card">
+    <h3><i class="ti ti-plane"></i> Nog even geduld...</h3>
+    <div class="countdown" id="countdown">
+      <div class="unit"><div class="val" id="cd-days">0</div><div class="lbl">dagen</div></div>
+      <div class="unit"><div class="val" id="cd-hours">0</div><div class="lbl">uur</div></div>
+      <div class="unit"><div class="val" id="cd-mins">0</div><div class="lbl">min</div></div>
+      <div class="unit"><div class="val" id="cd-secs">0</div><div class="lbl">sec</div></div>
+    </div>
+    <div class="trip-info">
+      <span><i class="ti ti-calendar"></i> 7 nachten</span>
+      <span><i class="ti ti-users"></i> 2 personen</span>
+      <span><i class="ti ti-sun"></i> ~35°C</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3><i class="ti ti-checklist"></i> Paklijst voortgang</h3>
+    <div class="pack-progress"><div class="pack-progress-fill" id="home-pack-fill" style="width:0%"></div></div>
+    <div class="pack-progress-label" id="home-pack-label">0 / 0 ingepakt</div>
+  </div>
+
+  <div class="card">
+    <h3><i class="ti ti-wallet"></i> Budget overzicht</h3>
+    <div class="budget-summary">
+      <div class="budget-stat"><div class="val" id="home-budget" style="color:var(--accent)">€0</div><div class="lbl">Budget</div></div>
+      <div class="budget-stat"><div class="val" id="home-spent" style="color:var(--red)">€0</div><div class="lbl">Uitgegeven</div></div>
+      <div class="budget-stat"><div class="val" id="home-left" style="color:var(--green)">€0</div><div class="lbl">Over</div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3><i class="ti ti-calendar-event"></i> Vandaag / Eerstvolgende dag</h3>
+    <div id="home-today"></div>
+  </div>
+</div>
+
+<!-- PAKLIJST -->
+<div id="page-pack" class="page">
+  <div class="card">
+    <h3><i class="ti ti-checklist"></i> Paklijst</h3>
+    <div class="pack-progress"><div class="pack-progress-fill" id="pack-fill" style="width:0%"></div></div>
+    <div class="pack-progress-label" id="pack-label">0 / 0 ingepakt</div>
+  </div>
+  <div id="pack-list"></div>
+  <div class="card">
+    <h3><i class="ti ti-plus"></i> Item toevoegen</h3>
+    <div class="add-row">
+      <input type="text" id="inp-pack-item" placeholder="bijv. Zonnebrand">
+      <select id="inp-pack-cat">
+        <option value="Kleding">👕 Kleding</option>
+        <option value="Toilettas">🧴 Toilettas</option>
+        <option value="Elektronica">🔌 Elektronica</option>
+        <option value="Documenten">📄 Documenten</option>
+        <option value="Overig">📦 Overig</option>
+      </select>
+      <button id="btn-add-pack"><i class="ti ti-plus"></i></button>
+    </div>
+  </div>
+</div>
+
+<!-- PLANNER -->
+<div id="page-plan" class="page">
+  <div class="card">
+    <h3><i class="ti ti-calendar-event"></i> Dagplanning</h3>
+    <div class="day-tab-scroll" id="day-tabs"></div>
+  </div>
+  <div id="day-activities"></div>
+  <div class="card">
+    <h3><i class="ti ti-plus"></i> Activiteit toevoegen</h3>
+    <div class="form-group">
+      <label>Tijd</label>
+      <input type="time" id="inp-act-time" value="10:00">
+    </div>
+    <div class="form-group">
+      <label>Activiteit</label>
+      <input type="text" id="inp-act-title" placeholder="bijv. Strand bij La Malagueta">
+    </div>
+    <div class="form-group">
+      <label>Notitie (optioneel)</label>
+      <textarea id="inp-act-note" placeholder="Tips, adres, etc."></textarea>
+    </div>
+    <button class="btn btn-primary" id="btn-add-act"><i class="ti ti-plus"></i> Toevoegen</button>
+  </div>
+</div>
+
+<!-- GUIDE -->
+<div id="page-guide" class="page">
+  <div class="card">
+    <h3><i class="ti ti-map-pin"></i> Málaga Tips</h3>
+    <div class="filter-row" id="guide-filters"></div>
+  </div>
+  <div id="guide-list"></div>
+</div>
+
+<!-- BUDGET -->
+<div id="page-budget" class="page">
+  <div class="card">
+    <h3><i class="ti ti-wallet"></i> Budget</h3>
+    <div class="form-group">
+      <label>Totaal budget (€)</label>
+      <input type="number" id="inp-budget" placeholder="bijv. 1000">
+    </div>
+    <button class="btn btn-primary btn-small" id="btn-set-budget" style="width:100%">Budget instellen</button>
+  </div>
+
+  <div class="card">
+    <h3><i class="ti ti-chart-pie"></i> Overzicht</h3>
+    <div class="budget-summary">
+      <div class="budget-stat"><div class="val" id="b-budget" style="color:var(--accent)">€0</div><div class="lbl">Budget</div></div>
+      <div class="budget-stat"><div class="val" id="b-spent" style="color:var(--red)">€0</div><div class="lbl">Uitgegeven</div></div>
+      <div class="budget-stat"><div class="val" id="b-left" style="color:var(--green)">€0</div><div class="lbl">Over</div></div>
+    </div>
+    <div id="cat-breakdown"></div>
+  </div>
+
+  <div class="card">
+    <h3><i class="ti ti-plus"></i> Uitgave toevoegen</h3>
+    <div class="form-group">
+      <label>Wat</label>
+      <input type="text" id="inp-exp-name" placeholder="bijv. Lunch restaurant">
+    </div>
+    <div style="display:flex;gap:8px">
+      <div class="form-group" style="flex:1">
+        <label>Bedrag (€)</label>
+        <input type="number" id="inp-exp-amount" placeholder="0.00" step="0.01">
+      </div>
+      <div class="form-group" style="flex:1">
+        <label>Categorie</label>
+        <select id="inp-exp-cat">
+          <option value="Eten & Drinken">🍽️ Eten & Drinken</option>
+          <option value="Transport">🚕 Transport</option>
+          <option value="Activiteiten">🎭 Activiteiten</option>
+          <option value="Shopping">🛍️ Shopping</option>
+          <option value="Verblijf">🏨 Verblijf</option>
+          <option value="Overig">📦 Overig</option>
+        </select>
+      </div>
+    </div>
+    <button class="btn btn-primary" id="btn-add-exp"><i class="ti ti-plus"></i> Toevoegen</button>
+  </div>
+
+  <div class="card">
+    <h3><i class="ti ti-list"></i> Uitgaven</h3>
+    <div id="expense-list"></div>
+  </div>
+</div>
+
+<nav class="tabs">
+  <button class="active" data-page="home"><i class="ti ti-home"></i>Home</button>
+  <button data-page="pack"><i class="ti ti-checklist"></i>Paklijst</button>
+  <button data-page="plan"><i class="ti ti-calendar"></i>Planner</button>
+  <button data-page="guide"><i class="ti ti-map-pin"></i>Guide</button>
+  <button data-page="budget"><i class="ti ti-wallet"></i>Budget</button>
+</nav>
+
+<script>
+const $=s=>document.querySelector(s);
+const $$=s=>document.querySelectorAll(s);
+
+const TRIP_START=new Date('2026-07-10T00:00:00');
+const TRIP_END=new Date('2026-07-17T23:59:59');
+const DAYS=['Vr 10 jul','Za 11 jul','Zo 12 jul','Ma 13 jul','Di 14 jul','Wo 15 jul','Do 16 jul','Vr 17 jul'];
+const DAY_KEYS=['2026-07-10','2026-07-11','2026-07-12','2026-07-13','2026-07-14','2026-07-15','2026-07-16','2026-07-17'];
+
+const DEFAULT_PACK=[
+  {name:'Paspoort/ID',cat:'Documenten',done:false},
+  {name:'Boardingpass',cat:'Documenten',done:false},
+  {name:'Reisverzekering',cat:'Documenten',done:false},
+  {name:'Zorgpas (EHIC)',cat:'Documenten',done:false},
+  {name:'T-shirts',cat:'Kleding',done:false},
+  {name:'Korte broeken',cat:'Kleding',done:false},
+  {name:'Zwembroek',cat:'Kleding',done:false},
+  {name:'Slippers',cat:'Kleding',done:false},
+  {name:'Sneakers',cat:'Kleding',done:false},
+  {name:'Zonnebril',cat:'Kleding',done:false},
+  {name:'Pet/hoed',cat:'Kleding',done:false},
+  {name:'Pyjama',cat:'Kleding',done:false},
+  {name:'Ondergoed & sokken',cat:'Kleding',done:false},
+  {name:'Nette outfit',cat:'Kleding',done:false},
+  {name:'Zonnebrand',cat:'Toilettas',done:false},
+  {name:'Tandenborstel & pasta',cat:'Toilettas',done:false},
+  {name:'Deodorant',cat:'Toilettas',done:false},
+  {name:'Shampoo',cat:'Toilettas',done:false},
+  {name:'After sun',cat:'Toilettas',done:false},
+  {name:'Telefoon + oplader',cat:'Elektronica',done:false},
+  {name:'Powerbank',cat:'Elektronica',done:false},
+  {name:'Oortjes/koptelefoon',cat:'Elektronica',done:false},
+  {name:'Handdoek (strand)',cat:'Overig',done:false},
+  {name:'Waterfles',cat:'Overig',done:false},
+  {name:'Rugzak (dagjes)',cat:'Overig',done:false}
+];
+
+const SPOTS=[
+  {name:'Alcazaba',cat:'Bezienswaardigheid',desc:'Moors paleis-fort uit de 11e eeuw met prachtig uitzicht over de stad en haven.',price:'€3,50',tip:'Ga vroeg in de ochtend, dan is het rustig en koeler.'},
+  {name:'Castillo de Gibralfaro',cat:'Bezienswaardigheid',desc:'Kasteel bovenop de heuvel met het beste panorama-uitzicht over Málaga.',price:'€3,50',tip:'Combineer met Alcazaba (combiticket €5,50). Neem water mee voor de klim!'},
+  {name:'Museo Picasso',cat:'Bezienswaardigheid',desc:'Museum gewijd aan Picasso, geboren in Málaga. 200+ werken.',price:'€12',tip:'Gratis op zondag de laatste 2 uur. Online reserveren scheelt wachten.'},
+  {name:'Centre Pompidou Málaga',cat:'Bezienswaardigheid',desc:'Moderne kunst in het kleurrijke kubus-gebouw aan de haven.',price:'€9',tip:'Zondag na 16:00 gratis entree.'},
+  {name:'Calle Marqués de Larios',cat:'Bezienswaardigheid',desc:'De mooiste winkelstraat van Málaga. Ideaal om te slenteren.',price:'Gratis',tip:'S avonds is het hier het leukst met straatartiesten.'},
+  {name:'Playa de La Malagueta',cat:'Strand',desc:'Het stadsstrand van Málaga. Alles bij de hand: chiringuitos, douches, parasols.',price:'Parasol ~€8',tip:'Vroeg een plekje zoeken in het hoogseizoen!'},
+  {name:'Playa de Pedregalejo',cat:'Strand',desc:'Gezellig strand iets buiten centrum met lokale sfeer en goede visrestaurants.',price:'Gratis',tip:'Probeer hier de espetos (gegrilde sardines op een stok).'},
+  {name:'El Palo',cat:'Strand',desc:'Rustig, lokaal strand voorbij Pedregalejo. Minder toeristen.',price:'Gratis',tip:'De chiringuitos hier zijn goedkoper dan in het centrum.'},
+  {name:'El Pimpi',cat:'Eten & Drinken',desc:'Legendarische bodega sinds 1971. Wijn, tapas, en Andalusische sfeer.',price:'€€',tip:'Probeer de vermouth van het vat en de berenjenas con miel (aubergine met honing).'},
+  {name:'Mercado Central de Atarazanas',cat:'Eten & Drinken',desc:'Overdekte markt met verse vis, tapas, fruit en lokale producten.',price:'€-€€',tip:'Ga voor lunch, niet voor diner (sluit rond 15:00). Probeer meerdere kraampjes.'},
+  {name:'Chiringuito bij het strand',cat:'Eten & Drinken',desc:'Strandtenten met verse vis en koude biertjes met zeezicht.',price:'€€',tip:'Bestel espetos en een tinto de verano (rode wijn met fris).'},
+  {name:'KGB (Kafka Gourmet Burger)',cat:'Eten & Drinken',desc:'Top burgers in het centrum voor een goede prijs.',price:'€€',tip:'Populair bij locals, kan druk zijn rond 21:00.'},
+  {name:'Caminito del Rey',cat:'Uitje',desc:'Spectaculair wandelpad langs steile kliffen. 45 min rijden van Málaga.',price:'€10',tip:'Ruim van tevoren online boeken! Het is vaak uitverkocht. Neem stevige schoenen mee.'},
+  {name:'Nerja & Frigiliana',cat:'Uitje',desc:'Prachtig wit dorpje + Balcón de Europa met uitzicht over zee. 1u rijden.',price:'Gratis',tip:'Combineer beide op één dag. Frigiliana is een van de mooiste dorpjes van Spanje.'},
+  {name:'Muelle Uno',cat:'Bezienswaardigheid',desc:'Havenpromenade met winkels, restaurants en uitzicht op de stad.',price:'Gratis',tip:'Leuk om s avonds te slenteren. Elke zondag een marktje.'},
+  {name:'Hammam Al Ándalus',cat:'Activiteit',desc:'Arabisch badhuis met warm/koud bad en optionele massage.',price:'Vanaf €39',tip:'Boek een avondsessie voor de meest relaxte sfeer.'},
+  {name:'Bodega Bar El Pimpi Terras',cat:'Eten & Drinken',desc:'Het dakterras van El Pimpi met uitzicht op de Alcazaba.',price:'€€',tip:'Boek vooruit of ga laat (na 22:00) voor een plekje.'},
+  {name:'Soho street art',cat:'Bezienswaardigheid',desc:'De creatieve wijk met grote muurschilderingen en galerieën.',price:'Gratis',tip:'Loop door Calle Casas de Campos en omgeving voor de beste street art.'}
+];
+
+const CAT_COLORS={'Eten & Drinken':'#f97316','Transport':'#3b82f6','Activiteiten':'#a855f7','Shopping':'#ec4899','Verblijf':'#14b8a6','Overig':'#6b7280'};
+const CAT_ICONS={'Eten & Drinken':'🍽️','Transport':'🚕','Activiteiten':'🎭','Shopping':'🛍️','Verblijf':'🏨','Overig':'📦'};
+const PACK_ICONS={'Kleding':'👕','Toilettas':'🧴','Elektronica':'🔌','Documenten':'📄','Overig':'📦'};
+
+// Data
+function get(k,d){return JSON.parse(localStorage.getItem('mal_'+k)||d||'null')}
+function set(k,v){localStorage.setItem('mal_'+k,JSON.stringify(v))}
+function getPackList(){return get('pack')||DEFAULT_PACK.map((p,i)=>({...p,id:i+1}))}
+function setPackList(d){set('pack',d)}
+function getActivities(){return get('activities')||{}}
+function setActivities(d){set('activities',d)}
+function getExpenses(){return get('expenses')||[]}
+function setExpenses(d){set('expenses',d)}
+function getBudget(){return get('budget')||0}
+function setBudget(d){set('budget',d)}
+
+let selectedDay=0;
+let guideFilter='Alles';
+
+// Countdown
+function updateCountdown(){
+  const now=new Date();
+  const diff=TRIP_START-now;
+  if(diff<=0){
+    const tripDiff=TRIP_END-now;
+    if(tripDiff>0){
+      $('#countdown').innerHTML='<div style="text-align:center;padding:10px"><div style="font-size:28px;font-weight:800;color:var(--green)">🎉 Je bent in Málaga!</div><div style="color:var(--text2);margin-top:8px">Geniet ervan!</div></div>';
+    } else {
+      $('#countdown').innerHTML='<div style="text-align:center;padding:10px"><div style="font-size:20px;color:var(--text2)">Wat een reis! 🌅</div></div>';
+    }
+    return;
+  }
+  const d=Math.floor(diff/86400000);
+  const h=Math.floor((diff%86400000)/3600000);
+  const m=Math.floor((diff%3600000)/60000);
+  const s=Math.floor((diff%60000)/1000);
+  $('#cd-days').textContent=d;
+  $('#cd-hours').textContent=h;
+  $('#cd-mins').textContent=m;
+  $('#cd-secs').textContent=s;
+}
+setInterval(updateCountdown,1000);
+updateCountdown();
+
+// Pack list
+function renderPack(){
+  const items=getPackList();
+  const done=items.filter(i=>i.done).length;
+  const total=items.length;
+  const pct=total?Math.round(done/total*100):0;
+
+  $('#pack-fill').style.width=pct+'%';
+  $('#pack-label').textContent=`${done} / ${total} ingepakt (${pct}%)`;
+  $('#home-pack-fill').style.width=pct+'%';
+  $('#home-pack-label').textContent=`${done} / ${total} ingepakt`;
+
+  const cats=[...new Set(items.map(i=>i.cat))];
+  const c=$('#pack-list');
+  c.innerHTML=cats.map(cat=>{
+    const catItems=items.filter(i=>i.cat===cat);
+    const catDone=catItems.filter(i=>i.done).length;
+    return `<div class="card pack-cat">
+      <div class="pack-cat-title">${PACK_ICONS[cat]||'📦'} ${cat} <span class="count">${catDone}/${catItems.length}</span></div>
+      ${catItems.map(item=>`<div class="pack-item ${item.done?'done':''}" onclick="togglePack(${item.id})">
+        <div class="check">${item.done?'<i class="ti ti-check"></i>':''}</div>
+        <span class="name">${item.name}</span>
+        <button class="del" onclick="event.stopPropagation();delPack(${item.id})"><i class="ti ti-x"></i></button>
+      </div>`).join('')}
+    </div>`;
+  }).join('');
+}
+
+function togglePack(id){const items=getPackList();const i=items.find(x=>x.id===id);if(i){i.done=!i.done;setPackList(items);renderPack();}}
+function delPack(id){setPackList(getPackList().filter(i=>i.id!==id));renderPack();}
+
+$('#btn-add-pack').onclick=()=>{
+  const name=$('#inp-pack-item').value.trim();
+  if(!name)return;
+  const items=getPackList();
+  items.push({id:Date.now(),name,cat:$('#inp-pack-cat').value,done:false});
+  setPackList(items);$('#inp-pack-item').value='';renderPack();
+};
+
+// Planner
+function renderDayTabs(){
+  const c=$('#day-tabs');
+  c.innerHTML=DAYS.map((d,i)=>`<div class="day-tab ${i===selectedDay?'active':''}" onclick="selectDay(${i})">${d}</div>`).join('');
+}
+
+function selectDay(i){selectedDay=i;renderDayTabs();renderActivities();}
+
+function renderActivities(){
+  const all=getActivities();
+  const key=DAY_KEYS[selectedDay];
+  const acts=(all[key]||[]).sort((a,b)=>a.time.localeCompare(b.time));
+  const c=$('#day-activities');
+  if(!acts.length){c.innerHTML='<div class="card"><div class="empty-state"><i class="ti ti-calendar-off"></i>Nog niets gepland voor deze dag</div></div>';return;}
+  c.innerHTML=acts.map(a=>`<div class="activity">
+    <span class="time">${a.time}</span>
+    <div class="info"><div class="act-title">${a.title}</div>${a.note?`<div class="act-note">${a.note}</div>`:''}</div>
+    <button class="del" onclick="delActivity('${key}',${a.id})"><i class="ti ti-trash"></i></button>
+  </div>`).join('');
+}
+
+function delActivity(key,id){
+  const all=getActivities();
+  all[key]=(all[key]||[]).filter(a=>a.id!==id);
+  setActivities(all);renderActivities();renderHomeToday();
+}
+
+$('#btn-add-act').onclick=()=>{
+  const title=$('#inp-act-title').value.trim();
+  if(!title)return;
+  const all=getActivities();
+  const key=DAY_KEYS[selectedDay];
+  if(!all[key])all[key]=[];
+  all[key].push({id:Date.now(),time:$('#inp-act-time').value,title,note:$('#inp-act-note').value.trim()});
+  setActivities(all);
+  $('#inp-act-title').value='';$('#inp-act-note').value='';
+  renderActivities();renderHomeToday();
+};
+
+// Guide
+function renderGuide(){
+  const cats=['Alles',...new Set(SPOTS.map(s=>s.cat))];
+  $('#guide-filters').innerHTML=cats.map(c=>`<div class="filter-btn ${guideFilter===c?'active':''}" onclick="setGuideFilter('${c}')">${c}</div>`).join('');
+  const filtered=guideFilter==='Alles'?SPOTS:SPOTS.filter(s=>s.cat===guideFilter);
+  $('#guide-list').innerHTML=filtered.map(s=>`<div class="spot-card" onclick="this.querySelector('.spot-expand').style.display=this.querySelector('.spot-expand').style.display==='none'?'block':'none'">
+    <div class="spot-top"><span class="spot-name">${s.name}</span><span class="spot-cat">${s.cat}</span></div>
+    <div class="spot-desc">${s.desc}</div>
+    <div class="spot-meta"><span><i class="ti ti-cash"></i>${s.price}</span></div>
+    <div class="spot-expand" style="display:none;margin-top:10px;padding-top:10px;border-top:1px solid #ffffff10">
+      <div style="font-size:12px;color:var(--accent)"><i class="ti ti-bulb"></i> Tip:</div>
+      <div style="font-size:12px;color:var(--text2);margin-top:4px">${s.tip}</div>
+    </div>
+  </div>`).join('');
+}
+
+window.setGuideFilter=function(f){guideFilter=f;renderGuide();};
+
+// Budget
+function renderBudget(){
+  const budget=getBudget();
+  const expenses=getExpenses();
+  const spent=expenses.reduce((a,e)=>a+e.amount,0);
+  const left=budget-spent;
+
+  const fmt=v=>'€'+v.toFixed(0);
+  $('#b-budget').textContent=fmt(budget);$('#home-budget').textContent=fmt(budget);
+  $('#b-spent').textContent=fmt(spent);$('#home-spent').textContent=fmt(spent);
+  $('#b-left').textContent=fmt(left);$('#home-left').textContent=fmt(left);
+  $('#b-left').style.color=left>=0?'var(--green)':'var(--red)';
+  $('#home-left').style.color=left>=0?'var(--green)':'var(--red)';
+
+  if(budget)$('#inp-budget').value=budget;
+
+  // Category breakdown
+  const cats={};
+  expenses.forEach(e=>{cats[e.cat]=(cats[e.cat]||0)+e.amount;});
+  const maxCat=Math.max(...Object.values(cats),1);
+  $('#cat-breakdown').innerHTML=Object.entries(cats).sort((a,b)=>b[1]-a[1]).map(([cat,val])=>`<div class="cat-bar">
+    <div class="cat-label"><span>${CAT_ICONS[cat]||''} ${cat}</span><span>€${val.toFixed(2)}</span></div>
+    <div class="bar"><div class="bar-fill" style="width:${(val/maxCat)*100}%;background:${CAT_COLORS[cat]||'#666'}"></div></div>
+  </div>`).join('');
+
+  // Expense list
+  const c=$('#expense-list');
+  if(!expenses.length){c.innerHTML='<div class="empty-state"><i class="ti ti-receipt-off"></i>Nog geen uitgaven</div>';return;}
+  c.innerHTML=expenses.map(e=>{
+    const d=new Date(e.date).toLocaleDateString('nl-NL',{day:'numeric',month:'short'});
+    return `<div class="expense-item">
+      <div class="cat-icon" style="background:${CAT_COLORS[e.cat]||'#666'}20;color:${CAT_COLORS[e.cat]||'#666'}">${CAT_ICONS[e.cat]||'📦'}</div>
+      <div class="exp-info"><div class="exp-name">${e.name}</div><div class="exp-cat">${e.cat} · ${d}</div></div>
+      <div class="exp-amount">€${e.amount.toFixed(2)}</div>
+      <button class="del" onclick="delExpense(${e.id})"><i class="ti ti-trash"></i></button>
+    </div>`;
+  }).join('');
+}
+
+function delExpense(id){setExpenses(getExpenses().filter(e=>e.id!==id));renderBudget();}
+
+$('#btn-set-budget').onclick=()=>{
+  const v=parseFloat($('#inp-budget').value);
+  if(!v||v<=0)return;
+  setBudget(v);renderBudget();
+};
+
+$('#btn-add-exp').onclick=()=>{
+  const name=$('#inp-exp-name').value.trim();
+  const amount=parseFloat($('#inp-exp-amount').value);
+  if(!name||!amount)return;
+  const expenses=getExpenses();
+  expenses.unshift({id:Date.now(),name,amount,cat:$('#inp-exp-cat').value,date:new Date().toISOString()});
+  setExpenses(expenses);
+  $('#inp-exp-name').value='';$('#inp-exp-amount').value='';
+  renderBudget();
+};
+
+// Home today
+function renderHomeToday(){
+  const now=new Date();
+  const all=getActivities();
+  let dayIdx=-1;
+  for(let i=0;i<DAY_KEYS.length;i++){
+    const d=new Date(DAY_KEYS[i]);
+    if(now.toDateString()===d.toDateString()){dayIdx=i;break;}
+  }
+  if(dayIdx===-1){
+    for(let i=0;i<DAY_KEYS.length;i++){
+      if(new Date(DAY_KEYS[i])>now){dayIdx=i;break;}
+    }
+  }
+  const c=$('#home-today');
+  if(dayIdx===-1){c.innerHTML='<div style="text-align:center;color:var(--text2);font-size:13px">Geen aankomende dagen</div>';return;}
+  const key=DAY_KEYS[dayIdx];
+  const acts=(all[key]||[]).sort((a,b)=>a.time.localeCompare(b.time));
+  c.innerHTML=`<div style="font-size:13px;font-weight:600;margin-bottom:8px;color:var(--accent)">${DAYS[dayIdx]}</div>`;
+  if(!acts.length){c.innerHTML+='<div style="font-size:13px;color:var(--text2)">Nog niets gepland</div>';return;}
+  c.innerHTML+=acts.slice(0,4).map(a=>`<div style="display:flex;gap:8px;padding:6px 0;border-bottom:1px solid #ffffff06">
+    <span style="font-size:12px;color:var(--accent);width:45px;flex-shrink:0">${a.time}</span>
+    <span style="font-size:13px">${a.title}</span>
+  </div>`).join('');
+  if(acts.length>4)c.innerHTML+=`<div style="font-size:12px;color:var(--text2);margin-top:6px">+ ${acts.length-4} meer...</div>`;
+}
+
+// Tabs
+$$('.tabs button').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    $$('.tabs button').forEach(b=>b.classList.remove('active'));
+    $$('.page').forEach(p=>p.classList.remove('active'));
+    btn.classList.add('active');
+    $(`#page-${btn.dataset.page}`).classList.add('active');
+  });
+});
+
+// Init
+renderPack();
+renderDayTabs();
+renderActivities();
+renderGuide();
+renderBudget();
+renderHomeToday();
+</script>
+</body>
+</html>
